@@ -108,4 +108,14 @@ public class Person implements Serializable {
             swimStyle.getPersons().remove(this); 
         }
     }
+
+    public List<SwimStyle> getStyles() {
+        return styles;
+    }
+
+    public void setStyles(List<SwimStyle> styles) {
+        this.styles = styles;
+    }
+    
+    
 }

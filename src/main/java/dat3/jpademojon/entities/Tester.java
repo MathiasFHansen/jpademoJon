@@ -5,11 +5,13 @@
  */
 package dat3.jpademojon.entities;
 
+import dto.PersonStyleDTO;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+
 
 /**
  *
@@ -73,7 +75,7 @@ public class Tester {
             System.out.println(f.getPerson().getName() + ": " + f.getAmount() + "kr. Den: " + f.getPayDate() + " Adr: " + f.getPerson().getAddress().getCity());
         }
         
-        /*TypedQuery<Person> q2 = em.createQuery("SELECT p FROM Person p", Person.class);
+        TypedQuery<Person> q2 = em.createQuery("SELECT p FROM Person p", Person.class);
         List<Person> persons = q2.getResultList();
         
         for (Person p: persons){
@@ -95,10 +97,66 @@ public class Tester {
         
         for (PersonStyleDTO p: personList){
             System.out.println(p.getName() + ", " + p.getYear() + ", " + p.getSwimStyle());
-        }*/
+        }
         
         populate(em);
         
+        System.out.println("********Lesson 1: Populate Dolphin database********");
+        System.out.println("---------------DONE---------------");
+        System.out.println("********Lesson 2: Create JPQL queries********");
+        System.out.println("********1. Find all persons and their fees********");
+        TypedQuery<Fee> q5 = em.createQuery("SELECT f FROM Fee f", Fee.class);
+        List<Fee> fees1 = q5.getResultList();
+
+        for (Fee f : fees1) {
+            System.out.println(f.getPerson().getName() + ": " + f.getAmount() + " kr. Den " + f.getPayDate()
+                    + "Adr: " + f.getPerson().getAddress().getCity());
+        }
+        System.out.println("---------------DONE---------------");
+        System.out.println("********2. Count number of swim styles connected to a person********");
+        
+        TypedQuery<Person> q6 = em.createQuery("SELECT p FROM Person p", Person.class);
+        List<Person> persons2 = q2.getResultList();
+        
+        for (Person p: persons2){
+            int amount = 0;
+            for (SwimStyle ss: p.getStyles()){
+                amount ++;
+            }
+            System.out.println("Navn: " + p.getName());
+            System.out.println("--Styles:" + amount);
+            
+        }
+        System.out.println("---------------DONE---------------");
+        
+        System.out.println("******3. Find all persons that has a swimstyle named 'Crawl' *******)");
+        TypedQuery<Person> q7 = em.createQuery("SELECT p FROM Person p JOIN p.styles s WHERE s.styleName ='Crawl'", Person.class);
+        List<Person> person3 = q7.getResultList();
+        
+        for (Person p: person3) {
+            System.out.println(p.getName());
+        }        
+        System.out.println("---------------DONE---------------");
+        
+        System.out.println("******4. Find the sum of all Fees *******)");
+        TypedQuery<Fee> q8 = em.createQuery("SELECT f FROM Fee f", Fee.class);
+        List<Fee> fee3 = q8.getResultList();
+        int amount = 0;
+        for (Fee f : fee3){
+            amount += f.getAmount();
+        }
+        System.out.println("Total sum of all fees: " + amount);
+        
+        System.out.println("---------------DONE---------------");
+        
+        System.out.println("******5. Find the smalles and highest fee *******)");
+        TypedQuery<Fee> q9 = em.createQuery("SELECT MAX (f.amount)FROM Fee f", Fee.class);
+        TypedQuery<Fee> q10 = em.createQuery("SELECT MIN (f.amount) FROM Fee f", Fee.class);
+        List<Fee> fee4 = q9.getResultList();
+        List<Fee> fee5 = q10.getResultList();
+  
+        System.out.println("Highest value: " + fee4.get(0) + " Lowest value: " + fee5.get(0)); 
+    
         em.close();
     }
     
@@ -158,6 +216,24 @@ public class Tester {
         p12.addFee(f1);
         p13.addFee(f3);
         p14.addFee(f2);
+        
+        SwimStyle s1 = new SwimStyle("Crawl");
+        SwimStyle s2 = new SwimStyle("Butterfly");
+        SwimStyle s3 = new SwimStyle("Breast Stroke");
+        
+        p3.addSwimStyle(s1);
+        p3.addSwimStyle(s3);
+        p4.addSwimStyle(s3);
+        p5.addSwimStyle(s2);
+        p6.addSwimStyle(s1);
+        p7.addSwimStyle(s3);
+        p8.addSwimStyle(s2);
+        p9.addSwimStyle(s1);
+        p10.addSwimStyle(s3);
+        p11.addSwimStyle(s2);
+        p12.addSwimStyle(s1);
+        p13.addSwimStyle(s3);
+        p14.addSwimStyle(s2);
         
         em.getTransaction().begin();
             em.persist(p3);

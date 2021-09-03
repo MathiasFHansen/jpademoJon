@@ -37,6 +37,8 @@ public class SwimStyle implements Serializable {
         this.styleName = styleName;
         this.persons = new ArrayList<>();
     }
+    
+    
 
     public String getStyleName() {
         return styleName;
